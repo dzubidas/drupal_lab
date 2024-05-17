@@ -1,0 +1,4 @@
+name: Debt Collector
+description: Custom module for choosing debt collectors
+core_version_requirement: ^9 || ^10
+type: module

@@ -1,0 +1,49 @@
+<?php
+
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Implements hook_install().
+ */
+function debt_collector_install()
+{
+  $field_name = 'owed_amount';
+  $field_storage = FieldStorageConfig::create([
+    'field_name' => $field_name,
+    'entity_type' => 'user',
+    'type' => 'float'
+  ]);
+
+  $field_storage->save();
+
+  $field = FieldConfig::create([
+    'field_storage' => $field_storage,
+    'bundle' => 'user',
+    'label' => 'Owed Amount',
+    'settings' => [
+      'min' => '',
+      'max' => '',
+      'prefix' => '$',
+      'suffix' => '',
+    ],
+    'required' => FALSE,
+  ]);
+
+  $field->save();
+}
+
+function debt_collector_uninstall() {
+  $field_name = 'owed_amount';
+  $entity_type = 'user';
+
+  $field = FieldConfig::loadByName($entity_type, 'user', $field_name);
+  if ($field) {
+    $field->delete();
+  }
+
+  $field_storage = FieldStorageConfig::loadByName($entity_type, $field_name);
+  if ($field_storage) {
+    $field_storage->delete();
+  }
+}

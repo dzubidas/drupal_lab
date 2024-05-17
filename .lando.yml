@@ -1,0 +1,21 @@
+name: drupal_lab
+recipe: drupal10
+config:
+  webroot: web
+  database: mariadb
+services:
+  adminer:
+    type: compose
+    services:
+      image: adminer
+      ports:
+        - "8080"
+      depends_on:
+        - database
+proxy:
+  adminer:
+    - adminer.drupal_lab.lndo.site:8080
+tooling:
+  drush:
+    service: appserver
+    cmd: /app/vendor/drush/drush/drush --root=/app/web

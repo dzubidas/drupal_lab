@@ -1,0 +1,31 @@
+<?php
+
+use Drupal\debt_collector\Collection\CollectionAgency;
+use Drupal\debt_collector\Collection\Rocky;
+
+/**
+ * Implements hook_preprocess_page().
+ *
+ */
+function debt_collector_preprocess_page(&$variables): void
+{
+  if (Drupal::service('path.matcher')->isFrontPage()) {
+    $agency = new CollectionAgency();
+    $amount_agency = $agency->collect(25000);
+
+    $debt_collection_service = Drupal::service('debt_collector.debt_collection_service');
+    $owed_amount_rocky = $debt_collection_service->collectDebt(new Rocky());
+    $owed_amount_agency = $debt_collection_service->collectDebt(new CollectionAgency());
+
+    dump('Rocky will return to you $' . $owed_amount_rocky);
+    dump('Collection agency will return to you $' . $owed_amount_agency);
+    dump('This is owed amount ' . $amount_agency);
+
+
+    $debtService = Drupal::service('debt_collector.debt_collection_service');
+    $user_id = 1;
+    $collector = new CollectionAgency();
+    $collectedAmount = $debtService->collectDebtForUser($user_id, $collector);
+    dump($collectedAmount);
+  }
+}
